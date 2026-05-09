@@ -2,6 +2,7 @@ jest.mock('expo-notifications', () => ({
   requestPermissionsAsync: jest.fn(() => Promise.resolve({ status: 'granted' })),
   cancelAllScheduledNotificationsAsync: jest.fn(() => Promise.resolve()),
   scheduleNotificationAsync: jest.fn(() => Promise.resolve('mock-id')),
+  SchedulableTriggerInputTypes: { DAILY: 'daily' },
 }))
 
 import * as Notifications from 'expo-notifications'
@@ -30,7 +31,7 @@ describe('scheduleReminder', () => {
     await scheduleReminder(20, 30)
     expect(Notifications.scheduleNotificationAsync).toHaveBeenCalledWith(
       expect.objectContaining({
-        trigger: expect.objectContaining({ hour: 20, minute: 30, repeats: true }),
+        trigger: expect.objectContaining({ hour: 20, minute: 30 }),
       })
     )
   })

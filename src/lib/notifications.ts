@@ -1,4 +1,5 @@
 import * as Notifications from 'expo-notifications'
+import { SchedulableTriggerInputTypes } from 'expo-notifications'
 
 const MESSAGES = [
   "You need 40/50 to pass. Quick quiz before bed?",
@@ -18,7 +19,7 @@ export async function scheduleReminder(hour: number, minute: number): Promise<vo
   const body = MESSAGES[new Date().getDay() % MESSAGES.length]
   await Notifications.scheduleNotificationAsync({
     content: { title: 'NevadaDMV Study Time', body, sound: true },
-    trigger: { hour, minute, repeats: true },
+    trigger: { type: SchedulableTriggerInputTypes.DAILY, hour, minute },
   })
 }
 
