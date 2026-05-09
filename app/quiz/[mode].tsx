@@ -1,0 +1,135 @@
+import React, { useState, useCallback, useRef } from 'react'
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native'
+import { useLocalSearchParams, router } from 'expo-router'
+import * as Haptics from 'expo-haptics'
+import { QUESTIONS } from '../../src/data/questions'
+import { useProgressStore } from '../../src/store/progress'
+import { filterQuestions } from '../../src/lib/quizUtils'
+import { QuizOption, OptionState } from '../../src/components/QuizOption'
+import { StreakBadge } from '../../src/components/StreakBadge'
+import type { QuizMode } from '../../src/lib/quizUtils'
+
+export default function QuizScreen() {
+  const { mode } = useLocalSearchParams<{ mode: QuizMode }>()
+  const getWeakQuestionIds = useProgressStore(s => s.getWeakQuestionIds)
+  const addRun = useProgressStore(s => s.addRun)
+
+  const [questions] = useState(() => filterQuestions(QUESTIONS, mode, getWeakQuestionIds()))
+  const [index, setIndex] = useState(0)
+  const [answered, setAnswered] = useState(false)
+  const [optionStates, setOptionStates] = useState<OptionState[]>([])
+  const [streak, setStreak] = useState(0)
+
+  const scoreRef = useRef(0)
+  const missedIdsRef = useRef<number[]>([])
+
+  const q = questions[index]
+
+  const pick = useCallback((choice: number) => {
+    if (answered || !q) return
+    setAnswered(true)
+    const isCorrect = choice === q.correct
+
+    setOptionStates(q.options.map((_, i) => {
+      if (i === q.correct) return 'correct'
+      if (i === choice && !isCorrect) return 'wrong'
+      return 'disabled'
+    }))
+
+    if (isCorrect) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+      scoreRef.current += 1
+      setStreak(s => s + 1)
+    } else {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+      missedIdsRef.current = [...missedIdsRef.current, q.id]
+      setStreak(0)
+    }
+  }, [answered, q])
+
+  const next = useCallback(() => {
+    if (index < questions.length - 1) {
+      setIndex(i => i + 1)
+      setAnswered(false)
+      setOptionStates([])
+    } else {
+      addRun({ mode, score: scoreRef.current, total: questions.length, missedIds: missedIdsRef.current })
+      router.replace({
+        pathname: '/quiz/results',
+        params: {
+          score: String(scoreRef.current),
+          total: String(questions.length),
+          mode,
+          missed: JSON.stringify(missedIdsRef.current),
+        },
+      })
+    }
+  }, [index, questions.length, mode, addRun])
+
+  if (!q) return null
+
+  const progress = ((index + 1) / questions.length) * 100
+  const lastAnswerCorrect = answered && !missedIdsRef.current.includes(q.id)
+
+  return (
+    <SafeAreaView style={styles.safe}>
+      <View style={styles.progressTrack}>
+        <View style={[styles.progressFill, { width: `${progress}%` }]} />
+      </View>
+      <View style={styles.header}>
+        <Text style={styles.counter}>Q{index + 1} / {questions.length}</Text>
+        <StreakBadge streak={streak} />
+        <TouchableOpacity onPress={() => router.back()}>
+          <Text style={styles.exit}>✕</Text>
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView contentContainerStyle={styles.body}>
+        <Text style={styles.question}>{q.question}</Text>
+        {q.options.map((opt, i) => (
+          <QuizOption
+            key={i}
+            letter={String.fromCharCode(65 + i)}
+            text={opt}
+            state={optionStates[i] ?? 'default'}
+            onPress={() => pick(i)}
+          />
+        ))}
+
+        {answered && (
+          <View style={styles.explain}>
+            <Text style={[styles.explainHead, { color: lastAnswerCorrect ? '#2ecc71' : '#e74c3c' }]}>
+              {lastAnswerCorrect ? 'Correct!' : `Incorrect — Answer: ${String.fromCharCode(65 + q.correct)}`}
+            </Text>
+            <Text style={styles.explainBody}>{q.explanation}</Text>
+          </View>
+        )}
+      </ScrollView>
+
+      {answered && (
+        <View style={styles.footer}>
+          <TouchableOpacity style={styles.nextBtn} onPress={next}>
+            <Text style={styles.nextText}>{index < questions.length - 1 ? 'Next →' : 'See Results →'}</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    </SafeAreaView>
+  )
+}
+
+const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: '#0a0a0a' },
+  progressTrack: { height: 3, backgroundColor: 'rgba(255,255,255,0.06)' },
+  progressFill: { height: 3, backgroundColor: '#e63329' },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16 },
+  counter: { fontSize: 13, color: '#888', fontWeight: '600' },
+  exit: { fontSize: 18, color: '#555' },
+  body: { padding: 20, paddingBottom: 120 },
+  question: { fontSize: 18, fontWeight: '700', color: '#f0f0f0', lineHeight: 26, marginBottom: 24 },
+  explain: { marginTop: 16, padding: 16, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.03)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
+  explainHead: { fontSize: 12, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 },
+  explainBody: { fontSize: 14, color: '#888', lineHeight: 22 },
+  footer: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: 16, paddingBottom: 32, backgroundColor: '#0a0a0a', borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)' },
+  nextBtn: { backgroundColor: '#e63329', padding: 16, borderRadius: 12, alignItems: 'center' },
+  nextText: { color: '#fff', fontSize: 15, fontWeight: '700' },
+})
