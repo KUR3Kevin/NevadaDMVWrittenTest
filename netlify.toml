@@ -1,0 +1,7 @@
+[build]
+  command = "npm install --legacy-peer-deps && npx expo export --platform web && sed -i 's/ defer><\\/script>/ type=\"module\"><\\/script>/g' dist/index.html"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "18"
+  NPM_FLAGS = "--legacy-peer-deps"
