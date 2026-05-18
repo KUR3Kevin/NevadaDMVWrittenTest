@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } fr
 import { router } from 'expo-router'
 import { useProgressStore } from '../../src/store/progress'
 import type { QuizMode } from '../../src/lib/quizUtils'
+import { theme } from '../../src/theme'
 
 type ModeCard = { mode: QuizMode; title: string; subtitle: string }
 
@@ -50,13 +51,13 @@ export default function QuizTab() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#0a0a0a' },
+  safe: { flex: 1, backgroundColor: theme.colors.bg },
   container: { padding: 24 },
-  heading: { fontSize: 32, fontWeight: '900', color: '#f0f0f0', letterSpacing: -1, marginBottom: 4 },
-  sub: { fontSize: 13, color: '#555', marginBottom: 32 },
-  card: { backgroundColor: 'rgba(255,255,255,0.04)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', borderRadius: 16, padding: 20, marginBottom: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  heading: { fontSize: theme.font.h1, fontWeight: '900', color: theme.colors.text, letterSpacing: -1, marginBottom: 4 },
+  sub: { fontSize: theme.font.small, color: theme.colors.textMute, marginBottom: 32 },
+  card: { backgroundColor: theme.colors.surface, borderWidth: 1, borderColor: theme.colors.border, borderRadius: theme.radius.md, padding: 20, marginBottom: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   cardLeft: { flex: 1 },
-  cardTitle: { fontSize: 18, fontWeight: '700', color: '#f0f0f0', marginBottom: 4 },
-  cardSub: { fontSize: 13, color: '#888' },
-  best: { fontSize: 13, color: '#e63329', fontWeight: '700', marginLeft: 12 },
+  cardTitle: { fontSize: 18, fontWeight: '700', color: theme.colors.text, marginBottom: 4 },
+  cardSub: { fontSize: theme.font.small, color: theme.colors.textDim },
+  best: { fontSize: theme.font.small, color: theme.colors.accent, fontWeight: '700', marginLeft: 12 },
 })

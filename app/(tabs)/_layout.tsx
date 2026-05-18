@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
+import { theme } from '../../src/theme'
 
 type IconName = React.ComponentProps<typeof Ionicons>['name']
 
@@ -12,9 +13,10 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { backgroundColor: '#141414', borderTopColor: 'rgba(255,255,255,0.1)' },
-        tabBarActiveTintColor: '#e63329',
-        tabBarInactiveTintColor: '#555',
+        tabBarStyle: { backgroundColor: theme.colors.surface, borderTopColor: theme.colors.border },
+        tabBarActiveTintColor: theme.colors.accent,
+        tabBarInactiveTintColor: theme.colors.textMute,
+        tabBarLabelStyle: { fontWeight: '700', fontSize: 11 },
       }}
     >
       <Tabs.Screen name="quiz" options={{ title: 'Quiz', tabBarIcon: ({ color, size, focused }) => <Ionicons name={icon('play-circle', focused)} size={size} color={color} /> }} />
