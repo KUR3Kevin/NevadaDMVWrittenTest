@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
+import { theme } from '../theme'
 
 type Props = { score: number; total: number }
 
@@ -15,11 +16,11 @@ export function ScoreCircle({ score, total }: Props) {
 }
 
 const styles = StyleSheet.create({
-  circle: { width: 140, height: 140, borderRadius: 70, alignItems: 'center', justifyContent: 'center', borderWidth: 2, backgroundColor: 'rgba(255,255,255,0.03)', alignSelf: 'center', marginBottom: 20 },
-  pass: { borderColor: '#2ecc71' },
-  fail: { borderColor: '#e74c3c' },
+  circle: { width: 140, height: 140, borderRadius: 70, alignItems: 'center', justifyContent: 'center', borderWidth: 2, backgroundColor: theme.colors.surface, alignSelf: 'center', marginBottom: 20 },
+  pass: { borderColor: theme.colors.success },
+  fail: { borderColor: theme.colors.accent },
   pct: { fontSize: 42, fontWeight: '900', lineHeight: 46 },
-  passText: { color: '#2ecc71' },
-  failText: { color: '#e74c3c' },
-  fraction: { fontSize: 12, color: '#888', marginTop: 4 },
+  passText: { color: theme.colors.success },
+  failText: { color: theme.colors.accent },
+  fraction: { fontSize: 12, color: theme.colors.textDim, marginTop: 4 },
 })

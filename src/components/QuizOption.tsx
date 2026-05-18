@@ -1,5 +1,6 @@
 import React from 'react'
 import { TouchableOpacity, Text, View, StyleSheet } from 'react-native'
+import { theme } from '../theme'
 
 export type OptionState = 'default' | 'correct' | 'wrong' | 'disabled'
 
@@ -22,12 +23,12 @@ export function QuizOption({ letter, text, state, onPress }: Props) {
 }
 
 const styles = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 16, borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', backgroundColor: 'rgba(255,255,255,0.02)', marginBottom: 10 },
-  rowCorrect: { borderColor: '#2ecc71', backgroundColor: 'rgba(46,204,113,0.15)' },
-  rowWrong: { borderColor: '#e74c3c', backgroundColor: 'rgba(231,76,60,0.15)' },
-  badge: { width: 32, height: 32, borderRadius: 8, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(255,255,255,0.06)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
-  badgeCorrect: { backgroundColor: '#2ecc71', borderColor: '#2ecc71' },
-  badgeWrong: { backgroundColor: '#e74c3c', borderColor: '#e74c3c' },
-  badgeText: { color: '#fff', fontSize: 12, fontWeight: '800' },
-  text: { color: '#f0f0f0', fontSize: 15, lineHeight: 22, flex: 1 },
+  row: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 16, borderRadius: theme.radius.md, borderWidth: 1, borderColor: theme.colors.border, backgroundColor: theme.colors.surface, marginBottom: 10 },
+  rowCorrect: { borderColor: theme.colors.success, backgroundColor: theme.colors.surfaceHi },
+  rowWrong: { borderColor: theme.colors.accent, backgroundColor: theme.colors.surfaceHi },
+  badge: { width: 32, height: 32, borderRadius: theme.radius.sm, alignItems: 'center', justifyContent: 'center', backgroundColor: theme.colors.surfaceHi, borderWidth: 1, borderColor: theme.colors.border },
+  badgeCorrect: { backgroundColor: theme.colors.success, borderColor: theme.colors.success },
+  badgeWrong: { backgroundColor: theme.colors.accent, borderColor: theme.colors.accent },
+  badgeText: { color: theme.colors.text, fontSize: 12, fontWeight: '800' },
+  text: { color: theme.colors.text, fontSize: 15, lineHeight: 22, flex: 1 },
 })

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { TouchableOpacity, Text, StyleSheet } from 'react-native'
 import { KeyFact } from '../data/keyFacts'
+import { theme } from '../theme'
 
 export function FlashCard({ fact }: { fact: KeyFact }) {
   const [flipped, setFlipped] = useState(false)
@@ -13,7 +14,7 @@ export function FlashCard({ fact }: { fact: KeyFact }) {
 }
 
 const styles = StyleSheet.create({
-  card: { borderRadius: 16, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', backgroundColor: 'rgba(255,255,255,0.03)', padding: 24, marginBottom: 12, minHeight: 100, justifyContent: 'center' },
-  hint: { fontSize: 11, color: '#e63329', fontWeight: '800', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 },
-  text: { fontSize: 16, color: '#f0f0f0', lineHeight: 24 },
+  card: { borderRadius: theme.radius.md, borderWidth: 1, borderColor: theme.colors.border, backgroundColor: theme.colors.surface, padding: 24, marginBottom: 12, minHeight: 100, justifyContent: 'center' },
+  hint: { fontSize: 11, color: theme.colors.accent, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 },
+  text: { fontSize: 16, color: theme.colors.text, lineHeight: 24 },
 })
