@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } fr
 import { useLocalSearchParams, router } from 'expo-router'
 import { QUESTIONS } from '../../src/data/questions'
 import { ScoreCircle } from '../../src/components/ScoreCircle'
+import { theme } from '../../src/theme'
 
 export default function ResultsScreen() {
   const { score, total, missed, mode } = useLocalSearchParams<{
@@ -53,16 +54,16 @@ export default function ResultsScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#0a0a0a' },
+  safe: { flex: 1, backgroundColor: theme.colors.bg },
   container: { padding: 24 },
-  title: { fontSize: 24, fontWeight: '800', color: '#f0f0f0', textAlign: 'center', marginBottom: 8 },
-  sub: { fontSize: 14, color: '#888', textAlign: 'center', marginBottom: 32, lineHeight: 22 },
-  sectionTitle: { fontSize: 13, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 1, color: '#555', marginBottom: 12 },
-  missItem: { padding: 16, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.02)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', marginBottom: 8 },
-  missQ: { fontSize: 14, color: '#f0f0f0', marginBottom: 6, lineHeight: 20 },
-  missA: { fontSize: 13, color: '#2ecc71', fontWeight: '700' },
-  primaryBtn: { backgroundColor: '#e63329', padding: 16, borderRadius: 12, alignItems: 'center', marginTop: 32, marginBottom: 10 },
-  primaryText: { color: '#fff', fontSize: 15, fontWeight: '700' },
-  outlineBtn: { borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)', padding: 16, borderRadius: 12, alignItems: 'center' },
-  outlineText: { color: '#888', fontSize: 15, fontWeight: '600' },
+  title: { fontSize: 24, fontWeight: '800', color: theme.colors.text, textAlign: 'center', marginBottom: 8 },
+  sub: { fontSize: 14, color: theme.colors.textDim, textAlign: 'center', marginBottom: 32, lineHeight: 22 },
+  sectionTitle: { fontSize: 13, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 1, color: theme.colors.textMute, marginBottom: 12 },
+  missItem: { padding: 16, borderRadius: theme.radius.md, backgroundColor: theme.colors.surface, borderWidth: 1, borderColor: theme.colors.border, marginBottom: 8 },
+  missQ: { fontSize: 14, color: theme.colors.text, marginBottom: 6, lineHeight: 20 },
+  missA: { fontSize: 13, color: theme.colors.success, fontWeight: '700' },
+  primaryBtn: { backgroundColor: theme.colors.accent, padding: 16, borderRadius: theme.radius.md, alignItems: 'center', marginTop: 32, marginBottom: 10 },
+  primaryText: { color: theme.colors.text, fontSize: 15, fontWeight: '700' },
+  outlineBtn: { borderWidth: 1, borderColor: theme.colors.border, padding: 16, borderRadius: theme.radius.md, alignItems: 'center' },
+  outlineText: { color: theme.colors.textDim, fontSize: 15, fontWeight: '600' },
 })

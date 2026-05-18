@@ -4,6 +4,7 @@ import { KEY_FACTS } from '../../src/data/keyFacts'
 import { ROAD_SIGNS } from '../../src/data/roadSigns'
 import { FlashCard } from '../../src/components/FlashCard'
 import { RoadSignIcon } from '../../src/components/RoadSignIcon'
+import { theme } from '../../src/theme'
 
 type Tab = 'facts' | 'signs'
 
@@ -57,19 +58,19 @@ export default function StudyTab() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#0a0a0a' },
-  segment: { flexDirection: 'row', margin: 16, borderRadius: 10, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
+  safe: { flex: 1, backgroundColor: theme.colors.bg },
+  segment: { flexDirection: 'row', margin: 16, borderRadius: theme.radius.md, overflow: 'hidden', borderWidth: 1, borderColor: theme.colors.border },
   segBtn: { flex: 1, paddingVertical: 10, alignItems: 'center' },
-  segActive: { backgroundColor: '#e63329' },
-  segText: { color: '#888', fontWeight: '600', fontSize: 14 },
-  segTextActive: { color: '#fff' },
+  segActive: { backgroundColor: theme.colors.accent },
+  segText: { color: theme.colors.textDim, fontWeight: '600', fontSize: 14 },
+  segTextActive: { color: theme.colors.text },
   body: { padding: 16, paddingTop: 0 },
-  hint: { fontSize: 13, color: '#555', textAlign: 'center', marginBottom: 16 },
+  hint: { fontSize: 13, color: theme.colors.textMute, textAlign: 'center', marginBottom: 16 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
-  signCard: { width: '47%', backgroundColor: 'rgba(255,255,255,0.03)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', borderRadius: 12, padding: 12, alignItems: 'center' },
-  signCardExpanded: { width: '100%', borderColor: 'rgba(230,51,41,0.4)' },
-  signName: { fontSize: 13, color: '#f0f0f0', fontWeight: '600', textAlign: 'center', marginTop: 8 },
-  signMeta: { fontSize: 11, color: '#555', textAlign: 'center', marginTop: 2 },
-  signMeaning: { fontSize: 13, color: '#888', lineHeight: 20, marginTop: 10, textAlign: 'center' },
-  signTip: { fontSize: 12, color: '#e63329', fontWeight: '600', marginTop: 6, textAlign: 'center' },
+  signCard: { width: '47%', backgroundColor: theme.colors.surface, borderWidth: 1, borderColor: theme.colors.border, borderRadius: theme.radius.md, padding: 12, alignItems: 'center' },
+  signCardExpanded: { width: '100%', borderColor: theme.colors.accent },
+  signName: { fontSize: 13, color: theme.colors.text, fontWeight: '600', textAlign: 'center', marginTop: 8 },
+  signMeta: { fontSize: 11, color: theme.colors.textMute, textAlign: 'center', marginTop: 2 },
+  signMeaning: { fontSize: 13, color: theme.colors.textDim, lineHeight: 20, marginTop: 10, textAlign: 'center' },
+  signTip: { fontSize: 12, color: theme.colors.accent, fontWeight: '600', marginTop: 6, textAlign: 'center' },
 })

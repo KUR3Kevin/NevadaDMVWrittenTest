@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Switch, Alert, TouchableOpacity, SafeAreaView, 
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { useProgressStore } from '../../src/store/progress'
 import { requestNotificationPermission, scheduleReminder, cancelReminder } from '../../src/lib/notifications'
+import { theme } from '../../src/theme'
 
 export default function SettingsTab() {
   const {
@@ -57,7 +58,7 @@ export default function SettingsTab() {
         <Text style={styles.section}>Daily Reminder</Text>
         <View style={styles.row}>
           <Text style={styles.label}>Enable reminder</Text>
-          <Switch value={notificationsEnabled} onValueChange={toggleNotifications} trackColor={{ true: '#e63329' }} thumbColor="#fff" />
+          <Switch value={notificationsEnabled} onValueChange={toggleNotifications} trackColor={{ true: theme.colors.accent }} thumbColor={theme.colors.text} />
         </View>
 
         {notificationsEnabled && (
@@ -83,14 +84,14 @@ export default function SettingsTab() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#0a0a0a' },
+  safe: { flex: 1, backgroundColor: theme.colors.bg },
   container: { padding: 24 },
-  heading: { fontSize: 32, fontWeight: '900', color: '#f0f0f0', letterSpacing: -1, marginBottom: 24 },
-  section: { fontSize: 13, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 1, color: '#555', marginBottom: 12 },
-  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.06)' },
-  label: { fontSize: 15, color: '#f0f0f0' },
-  value: { fontSize: 15, color: '#e63329', fontWeight: '600' },
-  resetBtn: { padding: 16, borderRadius: 12, borderWidth: 1, borderColor: '#e74c3c', alignItems: 'center', marginTop: 8 },
-  resetText: { color: '#e74c3c', fontSize: 15, fontWeight: '700' },
-  version: { color: '#333', fontSize: 12, textAlign: 'center', marginTop: 48 },
+  heading: { fontSize: theme.font.h1, fontWeight: '900', color: theme.colors.text, letterSpacing: -1, marginBottom: 24 },
+  section: { fontSize: 13, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 1, color: theme.colors.textMute, marginBottom: 12 },
+  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: theme.colors.border },
+  label: { fontSize: 15, color: theme.colors.text },
+  value: { fontSize: 15, color: theme.colors.accent, fontWeight: '600' },
+  resetBtn: { padding: 16, borderRadius: theme.radius.md, borderWidth: 1, borderColor: theme.colors.accent, alignItems: 'center', marginTop: 8 },
+  resetText: { color: theme.colors.accent, fontSize: 15, fontWeight: '700' },
+  version: { color: theme.colors.textMute, fontSize: 12, textAlign: 'center', marginTop: 48 },
 })

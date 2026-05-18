@@ -8,6 +8,7 @@ import { filterQuestions } from '../../src/lib/quizUtils'
 import { QuizOption, OptionState } from '../../src/components/QuizOption'
 import { StreakBadge } from '../../src/components/StreakBadge'
 import type { QuizMode } from '../../src/lib/quizUtils'
+import { theme } from '../../src/theme'
 
 export default function QuizScreen() {
   const { mode } = useLocalSearchParams<{ mode: QuizMode }>()
@@ -98,7 +99,7 @@ export default function QuizScreen() {
 
         {answered && (
           <View style={styles.explain}>
-            <Text style={[styles.explainHead, { color: lastAnswerCorrect ? '#2ecc71' : '#e74c3c' }]}>
+            <Text style={[styles.explainHead, { color: lastAnswerCorrect ? theme.colors.success : theme.colors.accent }]}>
               {lastAnswerCorrect ? 'Correct!' : `Incorrect — Answer: ${String.fromCharCode(65 + q.correct)}`}
             </Text>
             <Text style={styles.explainBody}>{q.explanation}</Text>
@@ -118,18 +119,18 @@ export default function QuizScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#0a0a0a' },
-  progressTrack: { height: 3, backgroundColor: 'rgba(255,255,255,0.06)' },
-  progressFill: { height: 3, backgroundColor: '#e63329' },
+  safe: { flex: 1, backgroundColor: theme.colors.bg },
+  progressTrack: { height: 3, backgroundColor: theme.colors.border },
+  progressFill: { height: 3, backgroundColor: theme.colors.accent },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16 },
-  counter: { fontSize: 13, color: '#888', fontWeight: '600' },
-  exit: { fontSize: 18, color: '#555' },
+  counter: { fontSize: 13, color: theme.colors.textDim, fontWeight: '600' },
+  exit: { fontSize: 18, color: theme.colors.textMute },
   body: { padding: 20, paddingBottom: 120 },
-  question: { fontSize: 18, fontWeight: '700', color: '#f0f0f0', lineHeight: 26, marginBottom: 24 },
-  explain: { marginTop: 16, padding: 16, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.03)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
+  question: { fontSize: 18, fontWeight: '700', color: theme.colors.text, lineHeight: 26, marginBottom: 24 },
+  explain: { marginTop: 16, padding: 16, borderRadius: theme.radius.md, backgroundColor: theme.colors.surface, borderWidth: 1, borderColor: theme.colors.border },
   explainHead: { fontSize: 12, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 },
-  explainBody: { fontSize: 14, color: '#888', lineHeight: 22 },
-  footer: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: 16, paddingBottom: 32, backgroundColor: '#0a0a0a', borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.06)' },
-  nextBtn: { backgroundColor: '#e63329', padding: 16, borderRadius: 12, alignItems: 'center' },
-  nextText: { color: '#fff', fontSize: 15, fontWeight: '700' },
+  explainBody: { fontSize: 14, color: theme.colors.textDim, lineHeight: 22 },
+  footer: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: 16, paddingBottom: 32, backgroundColor: theme.colors.bg, borderTopWidth: 1, borderTopColor: theme.colors.border },
+  nextBtn: { backgroundColor: theme.colors.accent, padding: 16, borderRadius: theme.radius.md, alignItems: 'center' },
+  nextText: { color: theme.colors.text, fontSize: 15, fontWeight: '700' },
 })

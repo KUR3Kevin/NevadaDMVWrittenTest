@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } fr
 import { router } from 'expo-router'
 import { useProgressStore } from '../../src/store/progress'
 import { QUESTIONS } from '../../src/data/questions'
+import { theme } from '../../src/theme'
 
 export default function ProgressTab() {
   const { runs, currentStreak, longestStreak, wrongCounts } = useProgressStore()
@@ -78,24 +79,24 @@ export default function ProgressTab() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#0a0a0a' },
+  safe: { flex: 1, backgroundColor: theme.colors.bg },
   container: { padding: 24 },
-  heading: { fontSize: 32, fontWeight: '900', color: '#f0f0f0', letterSpacing: -1, marginBottom: 24 },
+  heading: { fontSize: theme.font.h1, fontWeight: '900', color: theme.colors.text, letterSpacing: -1, marginBottom: 24 },
   row: { flexDirection: 'row', gap: 12, marginBottom: 32 },
-  stat: { flex: 1, backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: 12, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', padding: 16, alignItems: 'center' },
-  statNum: { fontSize: 28, fontWeight: '900', color: '#e63329' },
-  statLabel: { fontSize: 11, color: '#555', textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 4, textAlign: 'center' },
-  section: { fontSize: 13, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 1, color: '#555', marginBottom: 12 },
-  runRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 14, borderRadius: 10, backgroundColor: 'rgba(255,255,255,0.02)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', marginBottom: 8 },
-  runMode: { fontSize: 13, fontWeight: '700', color: '#f0f0f0' },
-  runDate: { fontSize: 12, color: '#555', marginTop: 2 },
+  stat: { flex: 1, backgroundColor: theme.colors.surface, borderRadius: theme.radius.md, borderWidth: 1, borderColor: theme.colors.border, padding: 16, alignItems: 'center' },
+  statNum: { fontSize: 28, fontWeight: '900', color: theme.colors.accent },
+  statLabel: { fontSize: 11, color: theme.colors.textMute, textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 4, textAlign: 'center' },
+  section: { fontSize: 13, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 1, color: theme.colors.textMute, marginBottom: 12 },
+  runRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 14, borderRadius: theme.radius.md, backgroundColor: theme.colors.surface, borderWidth: 1, borderColor: theme.colors.border, marginBottom: 8 },
+  runMode: { fontSize: 13, fontWeight: '700', color: theme.colors.text },
+  runDate: { fontSize: 12, color: theme.colors.textMute, marginTop: 2 },
   runScore: { fontSize: 18, fontWeight: '900' },
-  pass: { color: '#2ecc71' },
-  fail: { color: '#e74c3c' },
+  pass: { color: theme.colors.success },
+  fail: { color: theme.colors.accent },
   weakHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, marginTop: 8 },
-  drill: { color: '#e63329', fontWeight: '700', fontSize: 14 },
-  weakItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 14, borderRadius: 10, backgroundColor: 'rgba(255,255,255,0.02)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.05)', marginBottom: 8 },
-  weakQ: { fontSize: 13, color: '#f0f0f0', flex: 1, marginRight: 12 },
-  weakCount: { fontSize: 13, color: '#e74c3c', fontWeight: '800' },
-  empty: { color: '#555', textAlign: 'center', marginTop: 60, fontSize: 15, lineHeight: 24 },
+  drill: { color: theme.colors.accent, fontWeight: '700', fontSize: 14 },
+  weakItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 14, borderRadius: theme.radius.md, backgroundColor: theme.colors.surface, borderWidth: 1, borderColor: theme.colors.border, marginBottom: 8 },
+  weakQ: { fontSize: 13, color: theme.colors.text, flex: 1, marginRight: 12 },
+  weakCount: { fontSize: 13, color: theme.colors.accent, fontWeight: '800' },
+  empty: { color: theme.colors.textMute, textAlign: 'center', marginTop: 60, fontSize: 15, lineHeight: 24 },
 })
