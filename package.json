@@ -28,7 +28,7 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
-    "@expo/cli": "^55.0.30",
+    "@expo/cli": "^57.0.3",
     "@testing-library/react-native": "^13.3.3",
     "@types/jest": "^29.5.14",
     "@types/react": "~19.1.0",
