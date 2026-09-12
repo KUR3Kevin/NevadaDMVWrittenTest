@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export type QuizMode = 'all' | 'quick' | 'tf' | 'weak'
+export type QuizMode = 'exam' | 'all' | 'quick' | 'tf' | 'weak'
 
 export type Run = {
   mode: QuizMode

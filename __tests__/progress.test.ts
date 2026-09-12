@@ -13,7 +13,7 @@ beforeEach(() => {
 
 describe('addRun', () => {
   it('appends a run with today date', () => {
-    useProgressStore.getState().addRun({ mode: 'all', score: 45, total: 53, missedIds: [] })
+    useProgressStore.getState().addRun({ mode: 'all', score: 45, total: 56, missedIds: [] })
     const { runs } = useProgressStore.getState()
     expect(runs).toHaveLength(1)
     expect(runs[0].score).toBe(45)
@@ -21,7 +21,7 @@ describe('addRun', () => {
   })
 
   it('increments wrongCounts for each missed question id', () => {
-    useProgressStore.getState().addRun({ mode: 'all', score: 50, total: 53, missedIds: [3, 7] })
+    useProgressStore.getState().addRun({ mode: 'all', score: 50, total: 56, missedIds: [3, 7] })
     useProgressStore.getState().addRun({ mode: 'quick', score: 18, total: 20, missedIds: [3] })
     const { wrongCounts } = useProgressStore.getState()
     expect(wrongCounts[3]).toBe(2)
@@ -29,7 +29,7 @@ describe('addRun', () => {
   })
 
   it('starts streak at 1 on first run', () => {
-    useProgressStore.getState().addRun({ mode: 'all', score: 45, total: 53, missedIds: [] })
+    useProgressStore.getState().addRun({ mode: 'all', score: 45, total: 56, missedIds: [] })
     expect(useProgressStore.getState().currentStreak).toBe(1)
     expect(useProgressStore.getState().longestStreak).toBe(1)
   })
@@ -43,13 +43,13 @@ describe('addRun', () => {
 
   it('resets streak to 1 when last study was >1 day ago', () => {
     useProgressStore.setState({ lastStudyDate: '2020-01-01', currentStreak: 5, longestStreak: 5 })
-    useProgressStore.getState().addRun({ mode: 'all', score: 45, total: 53, missedIds: [] })
+    useProgressStore.getState().addRun({ mode: 'all', score: 45, total: 56, missedIds: [] })
     expect(useProgressStore.getState().currentStreak).toBe(1)
   })
 
   it('preserves longestStreak when current resets', () => {
     useProgressStore.setState({ lastStudyDate: '2020-01-01', currentStreak: 5, longestStreak: 10 })
-    useProgressStore.getState().addRun({ mode: 'all', score: 45, total: 53, missedIds: [] })
+    useProgressStore.getState().addRun({ mode: 'all', score: 45, total: 56, missedIds: [] })
     expect(useProgressStore.getState().longestStreak).toBe(10)
   })
 })
@@ -73,19 +73,19 @@ describe('getBestScore', () => {
   it('returns highest score percentage for mode', () => {
     useProgressStore.setState({
       runs: [
-        { mode: 'all', score: 40, total: 53, date: '2026-01-01', missedIds: [] },
-        { mode: 'all', score: 50, total: 53, date: '2026-01-02', missedIds: [] },
+        { mode: 'all', score: 40, total: 56, date: '2026-01-01', missedIds: [] },
+        { mode: 'all', score: 50, total: 56, date: '2026-01-02', missedIds: [] },
         { mode: 'quick', score: 18, total: 20, date: '2026-01-01', missedIds: [] },
       ],
     })
-    expect(useProgressStore.getState().getBestScore('all')).toBe(Math.round((50/53)*100))
+    expect(useProgressStore.getState().getBestScore('all')).toBe(Math.round((50/56)*100))
     expect(useProgressStore.getState().getBestScore('quick')).toBe(90)
   })
 })
 
 describe('reset', () => {
   it('clears all runs and counts', () => {
-    useProgressStore.setState({ runs: [{ mode: 'all', score: 50, total: 53, date: '2026-01-01', missedIds: [] }], wrongCounts: { 1: 2 }, currentStreak: 5 })
+    useProgressStore.setState({ runs: [{ mode: 'all', score: 50, total: 56, date: '2026-01-01', missedIds: [] }], wrongCounts: { 1: 2 }, currentStreak: 5 })
     useProgressStore.getState().reset()
     const state = useProgressStore.getState()
     expect(state.runs).toHaveLength(0)

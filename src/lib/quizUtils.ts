@@ -1,6 +1,15 @@
 import { Question } from '../data/questions'
 
-export type QuizMode = 'all' | 'quick' | 'tf' | 'weak'
+export type QuizMode = 'exam' | 'all' | 'quick' | 'tf' | 'weak'
+
+/** Official Nevada Class C knowledge test length (NV DMV). */
+export const EXAM_LENGTH = 25
+export const PASS_RATIO = 0.8
+export const QUIZ_MODES: QuizMode[] = ['exam', 'all', 'quick', 'tf', 'weak']
+
+export function isQuizMode(value: unknown): value is QuizMode {
+  return typeof value === 'string' && (QUIZ_MODES as string[]).includes(value)
+}
 
 export function shuffleArray<T>(arr: T[]): T[] {
   const a = [...arr]
@@ -11,19 +20,36 @@ export function shuffleArray<T>(arr: T[]): T[] {
   return a
 }
 
+/** Shuffle answer order so letter-memorization does not leak the key. */
+export function shuffleQuestionOptions(question: Question): Question {
+  const indexed = question.options.map((text, i) => ({ text, i }))
+  const shuffled = shuffleArray(indexed)
+  return {
+    ...question,
+    options: shuffled.map(item => item.text),
+    correct: shuffled.findIndex(item => item.i === question.correct),
+  }
+}
+
 export function filterQuestions(
   questions: Question[],
   mode: QuizMode,
   weakIds: number[]
 ): Question[] {
   switch (mode) {
-    case 'all':   return shuffleArray([...questions])
-    case 'quick': return shuffleArray([...questions]).slice(0, 20)
-    case 'tf':    return shuffleArray(questions.filter(q => q.options.length === 2))
-    case 'weak':  return shuffleArray(questions.filter(q => weakIds.includes(q.id)))
+    case 'exam':
+      return shuffleArray([...questions]).slice(0, Math.min(EXAM_LENGTH, questions.length))
+    case 'all':
+      return shuffleArray([...questions])
+    case 'quick':
+      return shuffleArray([...questions]).slice(0, Math.min(20, questions.length))
+    case 'tf':
+      return shuffleArray(questions.filter(q => q.options.length === 2))
+    case 'weak':
+      return shuffleArray(questions.filter(q => weakIds.includes(q.id)))
   }
 }
 
 export function calculatePassFail(score: number, total: number): boolean {
-  return total > 0 && score / total >= 0.8
+  return total > 0 && score / total >= PASS_RATIO
 }

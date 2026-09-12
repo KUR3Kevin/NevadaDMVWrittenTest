@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   segActive: { backgroundColor: theme.colors.accent },
   segText: { color: theme.colors.textDim, fontWeight: '600', fontSize: 14 },
   segTextActive: { color: theme.colors.text },
-  body: { padding: 16, paddingTop: 0 },
+  body: { padding: 16, paddingTop: 0, paddingBottom: 96 },
   hint: { fontSize: 13, color: theme.colors.textMute, textAlign: 'center', marginBottom: 16 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
   signCard: { width: '47%', backgroundColor: theme.colors.surface, borderWidth: 1, borderColor: theme.colors.border, borderRadius: theme.radius.md, padding: 12, alignItems: 'center' },

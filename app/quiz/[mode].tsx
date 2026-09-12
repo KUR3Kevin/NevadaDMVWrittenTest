@@ -1,21 +1,47 @@
 import React, { useState, useCallback, useRef } from 'react'
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Platform } from 'react-native'
 import { useLocalSearchParams, router } from 'expo-router'
 import * as Haptics from 'expo-haptics'
 import { QUESTIONS } from '../../src/data/questions'
 import { useProgressStore } from '../../src/store/progress'
-import { filterQuestions } from '../../src/lib/quizUtils'
+import { filterQuestions, isQuizMode, shuffleQuestionOptions } from '../../src/lib/quizUtils'
+import type { QuizMode } from '../../src/lib/quizUtils'
 import { QuizOption, OptionState } from '../../src/components/QuizOption'
 import { StreakBadge } from '../../src/components/StreakBadge'
-import type { QuizMode } from '../../src/lib/quizUtils'
 import { theme } from '../../src/theme'
 
+async function hapticSuccess() {
+  if (Platform.OS === 'web') return
+  try {
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+  } catch {
+    // Native haptics are optional.
+  }
+}
+
+async function hapticError() {
+  if (Platform.OS === 'web') return
+  try {
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+  } catch {
+    // Native haptics are optional.
+  }
+}
+
+function parseMode(raw: string | string[] | undefined): QuizMode {
+  const value = Array.isArray(raw) ? raw[0] : raw
+  return isQuizMode(value) ? value : 'exam'
+}
+
 export default function QuizScreen() {
-  const { mode } = useLocalSearchParams<{ mode: QuizMode }>()
+  const params = useLocalSearchParams<{ mode: string }>()
+  const mode = parseMode(params.mode)
   const getWeakQuestionIds = useProgressStore(s => s.getWeakQuestionIds)
   const addRun = useProgressStore(s => s.addRun)
 
-  const [questions] = useState(() => filterQuestions(QUESTIONS, mode, getWeakQuestionIds()))
+  const [questions] = useState(() =>
+    filterQuestions(QUESTIONS, mode, getWeakQuestionIds()).map(shuffleQuestionOptions)
+  )
   const [index, setIndex] = useState(0)
   const [answered, setAnswered] = useState(false)
   const [optionStates, setOptionStates] = useState<OptionState[]>([])
@@ -23,6 +49,7 @@ export default function QuizScreen() {
 
   const scoreRef = useRef(0)
   const missedIdsRef = useRef<number[]>([])
+  const lastCorrectRef = useRef(false)
 
   const q = questions[index]
 
@@ -30,6 +57,7 @@ export default function QuizScreen() {
     if (answered || !q) return
     setAnswered(true)
     const isCorrect = choice === q.correct
+    lastCorrectRef.current = isCorrect
 
     setOptionStates(q.options.map((_, i) => {
       if (i === q.correct) return 'correct'
@@ -38,11 +66,11 @@ export default function QuizScreen() {
     }))
 
     if (isCorrect) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+      void hapticSuccess()
       scoreRef.current += 1
       setStreak(s => s + 1)
     } else {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
+      void hapticError()
       missedIdsRef.current = [...missedIdsRef.current, q.id]
       setStreak(0)
     }
@@ -67,10 +95,27 @@ export default function QuizScreen() {
     }
   }, [index, questions.length, mode, addRun])
 
+  if (questions.length === 0) {
+    return (
+      <SafeAreaView style={styles.safe}>
+        <View style={styles.empty}>
+          <Text style={styles.emptyTitle}>No questions yet</Text>
+          <Text style={styles.emptyBody}>
+            {mode === 'weak'
+              ? 'Miss the same question twice and it will show up here as a weak-area drill.'
+              : 'This quiz mode has no questions right now.'}
+          </Text>
+          <TouchableOpacity style={styles.nextBtn} onPress={() => router.back()}>
+            <Text style={styles.nextText}>Back</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    )
+  }
+
   if (!q) return null
 
   const progress = ((index + 1) / questions.length) * 100
-  const lastAnswerCorrect = answered && !missedIdsRef.current.includes(q.id)
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -80,7 +125,7 @@ export default function QuizScreen() {
       <View style={styles.header}>
         <Text style={styles.counter}>Q{index + 1} / {questions.length}</Text>
         <StreakBadge streak={streak} />
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => router.back()} accessibilityRole="button" accessibilityLabel="Exit quiz">
           <Text style={styles.exit}>✕</Text>
         </TouchableOpacity>
       </View>
@@ -89,7 +134,7 @@ export default function QuizScreen() {
         <Text style={styles.question}>{q.question}</Text>
         {q.options.map((opt, i) => (
           <QuizOption
-            key={i}
+            key={`${q.id}-${i}`}
             letter={String.fromCharCode(65 + i)}
             text={opt}
             state={optionStates[i] ?? 'default'}
@@ -99,8 +144,8 @@ export default function QuizScreen() {
 
         {answered && (
           <View style={styles.explain}>
-            <Text style={[styles.explainHead, { color: lastAnswerCorrect ? theme.colors.success : theme.colors.accent }]}>
-              {lastAnswerCorrect ? 'Correct!' : `Incorrect — Answer: ${String.fromCharCode(65 + q.correct)}`}
+            <Text style={[styles.explainHead, { color: lastCorrectRef.current ? theme.colors.success : theme.colors.accent }]}>
+              {lastCorrectRef.current ? 'Correct!' : `Incorrect — Answer: ${String.fromCharCode(65 + q.correct)}`}
             </Text>
             <Text style={styles.explainBody}>{q.explanation}</Text>
           </View>
@@ -133,4 +178,7 @@ const styles = StyleSheet.create({
   footer: { position: 'absolute', bottom: 0, left: 0, right: 0, padding: 16, paddingBottom: 32, backgroundColor: theme.colors.bg, borderTopWidth: 1, borderTopColor: theme.colors.border },
   nextBtn: { backgroundColor: theme.colors.accent, padding: 16, borderRadius: theme.radius.md, alignItems: 'center' },
   nextText: { color: theme.colors.text, fontSize: 15, fontWeight: '700' },
+  empty: { flex: 1, justifyContent: 'center', padding: 32, gap: 16 },
+  emptyTitle: { fontSize: 22, fontWeight: '800', color: theme.colors.text, textAlign: 'center' },
+  emptyBody: { fontSize: 15, color: theme.colors.textDim, lineHeight: 22, textAlign: 'center', marginBottom: 12 },
 })
