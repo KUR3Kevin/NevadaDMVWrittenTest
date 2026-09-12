@@ -26,5 +26,5 @@ export const ROAD_SIGNS: RoadSign[] = [
   { id: 'no-uturn', name: 'No U-Turn', type: 'no-uturn', colorLabel: 'White & Red', shapeLabel: 'Circle with slash', meaning: 'U-turns are prohibited at this location.', tip: 'Also illegal on hills <500ft visibility, curves, fire stations, railroads.' },
   { id: 'railroad', name: 'Railroad Crossing', type: 'railroad', colorLabel: 'Yellow & Black', shapeLabel: 'Round', meaning: 'Railroad crossing ahead. Expect trains.', tip: 'Round yellow sign with RR = advance warning. Stop at the gate.' },
   { id: 'school', name: 'School Zone', type: 'school', colorLabel: 'Yellow-Green', shapeLabel: 'Pentagon', meaning: 'School zone or crosswalk. Reduced speed limit.', tip: 'Pentagon shape is unique to school and pedestrian signs.' },
-  { id: 'hov', name: 'HOV / Diamond Lane', type: 'hov', colorLabel: 'White on Black', shapeLabel: 'Diamond', meaning: 'High-Occupancy Vehicle lane. 3+ persons required in Nevada.', tip: 'Nevada requires 3+ occupants (some states use 2 — Nevada is 3).' },
+  { id: 'hov', name: 'HOV / Diamond Lane', type: 'hov', colorLabel: 'White on Black', shapeLabel: 'Diamond', meaning: 'High-Occupancy Vehicle lane. 2+ persons required in Nevada.', tip: 'Nevada requires 2+ occupants. Motorcycles are eligible. Hours vary — read the signs.' },
 ]

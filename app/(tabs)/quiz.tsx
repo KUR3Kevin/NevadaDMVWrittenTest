@@ -2,13 +2,16 @@ import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native'
 import { router } from 'expo-router'
 import { useProgressStore } from '../../src/store/progress'
+import { QUESTIONS } from '../../src/data/questions'
 import type { QuizMode } from '../../src/lib/quizUtils'
+import { Disclaimer } from '../../src/components/Disclaimer'
 import { theme } from '../../src/theme'
 
 type ModeCard = { mode: QuizMode; title: string; subtitle: string }
 
 const MODES: ModeCard[] = [
-  { mode: 'all', title: 'Full Quiz', subtitle: '53 questions — mirrors the real test' },
+  { mode: 'exam', title: 'Practice Test', subtitle: '25 questions — same length as the official NV knowledge test' },
+  { mode: 'all', title: 'Study Bank', subtitle: `${QUESTIONS.length} handbook questions covering signs, rules, and safety` },
   { mode: 'quick', title: 'Quick 20', subtitle: '20 random questions' },
   { mode: 'tf', title: 'True / False', subtitle: 'Yes/No questions only' },
 ]
@@ -26,8 +29,8 @@ export default function QuizTab() {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.heading}>NevadaDMV</Text>
-        <Text style={styles.sub}>Need 40/50 (80%) to pass · Las Vegas, NV</Text>
+        <Text style={styles.heading}>Nevada DMV</Text>
+        <Text style={styles.sub}>Official knowledge test: 20/25 (80%) to pass</Text>
         {cards.map(card => {
           const best = getBestScore(card.mode)
           return (
@@ -45,6 +48,9 @@ export default function QuizTab() {
             </TouchableOpacity>
           )
         })}
+        <View style={styles.disclaimerWrap}>
+          <Disclaimer />
+        </View>
       </ScrollView>
     </SafeAreaView>
   )
@@ -60,4 +66,5 @@ const styles = StyleSheet.create({
   cardTitle: { fontSize: 18, fontWeight: '700', color: theme.colors.text, marginBottom: 4 },
   cardSub: { fontSize: theme.font.small, color: theme.colors.textDim },
   best: { fontSize: theme.font.small, color: theme.colors.accent, fontWeight: '700', marginLeft: 12 },
+  disclaimerWrap: { marginTop: 16 },
 })

@@ -1,4 +1,4 @@
-import { filterQuestions, shuffleArray, calculatePassFail } from '../src/lib/quizUtils'
+import { filterQuestions, shuffleArray, calculatePassFail, shuffleQuestionOptions, EXAM_LENGTH } from '../src/lib/quizUtils'
 import { QUESTIONS } from '../src/data/questions'
 
 describe('shuffleArray', () => {
@@ -15,9 +15,21 @@ describe('shuffleArray', () => {
   })
 })
 
+describe('shuffleQuestionOptions', () => {
+  it('keeps the same correct answer text after shuffling', () => {
+    const original = QUESTIONS[0]
+    const shuffled = shuffleQuestionOptions(original)
+    expect(shuffled.options[shuffled.correct]).toBe(original.options[original.correct])
+    expect(shuffled.options.slice().sort()).toEqual(original.options.slice().sort())
+  })
+})
+
 describe('filterQuestions', () => {
-  it('all: returns all 53 questions', () => {
-    expect(filterQuestions(QUESTIONS, 'all', [])).toHaveLength(53)
+  it('all: returns every question', () => {
+    expect(filterQuestions(QUESTIONS, 'all', [])).toHaveLength(QUESTIONS.length)
+  })
+  it('exam: returns 25 questions like the official knowledge test', () => {
+    expect(filterQuestions(QUESTIONS, 'exam', [])).toHaveLength(EXAM_LENGTH)
   })
   it('quick: returns exactly 20 questions', () => {
     expect(filterQuestions(QUESTIONS, 'quick', [])).toHaveLength(20)
@@ -38,15 +50,19 @@ describe('filterQuestions', () => {
 
 describe('calculatePassFail', () => {
   it('returns true at exactly 80%', () => {
+    expect(calculatePassFail(20, 25)).toBe(true)
     expect(calculatePassFail(40, 50)).toBe(true)
   })
   it('returns true above 80%', () => {
-    expect(calculatePassFail(53, 53)).toBe(true)
+    expect(calculatePassFail(25, 25)).toBe(true)
   })
   it('returns false below 80%', () => {
-    expect(calculatePassFail(39, 50)).toBe(false)
+    expect(calculatePassFail(19, 25)).toBe(false)
   })
   it('returns false for 0/N', () => {
-    expect(calculatePassFail(0, 53)).toBe(false)
+    expect(calculatePassFail(0, 25)).toBe(false)
+  })
+  it('returns false when total is 0', () => {
+    expect(calculatePassFail(0, 0)).toBe(false)
   })
 })

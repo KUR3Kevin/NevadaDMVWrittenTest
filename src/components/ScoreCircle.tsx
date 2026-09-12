@@ -5,7 +5,7 @@ import { theme } from '../theme'
 type Props = { score: number; total: number }
 
 export function ScoreCircle({ score, total }: Props) {
-  const pct = Math.round((score / total) * 100)
+  const pct = total > 0 ? Math.round((score / total) * 100) : 0
   const passed = pct >= 80
   return (
     <View style={[styles.circle, passed ? styles.pass : styles.fail]}>
