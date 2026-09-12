@@ -40,7 +40,7 @@ Unofficial study quiz for the Nevada Class C knowledge test. Expo + Expo Router 
 ## App
 
 - Practice Test = 25 questions (exam length)
-- Study Bank = full question set (56 as of 2026-09-12)
+- Study Bank = full question set (58 as of 2026-09-12)
 - Quick 20 / True-False / Weak Areas
 - Study tab: key facts + road-sign shapes
 - Progress stored locally (AsyncStorage / browser)

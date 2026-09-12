@@ -34,10 +34,13 @@ describe('filterQuestions', () => {
   it('quick: returns exactly 20 questions', () => {
     expect(filterQuestions(QUESTIONS, 'quick', [])).toHaveLength(20)
   })
-  it('tf: returns only 2-option questions', () => {
+  it('tf: returns only 2-option questions with both true and false answers', () => {
     const result = filterQuestions(QUESTIONS, 'tf', [])
     result.forEach(q => expect(q.options).toHaveLength(2))
     expect(result.length).toBeGreaterThan(0)
+    const labels = QUESTIONS.filter(q => q.options.length === 2).map(q => q.options[q.correct].toLowerCase())
+    expect(labels).toContain('true')
+    expect(labels).toContain('false')
   })
   it('weak: returns only questions matching weakIds', () => {
     const result = filterQuestions(QUESTIONS, 'weak', [1, 5, 10])
