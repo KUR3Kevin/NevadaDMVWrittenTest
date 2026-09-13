@@ -13,5 +13,5 @@ export function StreakBadge({ streak }: { streak: number }) {
 
 const styles = StyleSheet.create({
   badge: { backgroundColor: theme.colors.surface, borderWidth: 1, borderColor: theme.colors.accent, paddingHorizontal: 12, paddingVertical: 4, borderRadius: 20 },
-  text: { color: theme.colors.accent, fontSize: 12, fontWeight: '700' },
+  text: { color: theme.colors.accent, fontSize: 15, fontWeight: '800' },
 })

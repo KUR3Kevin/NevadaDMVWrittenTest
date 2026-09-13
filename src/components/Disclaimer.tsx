@@ -13,9 +13,9 @@ export function Disclaimer({ compact = false }: { compact?: boolean }) {
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 12,
-    color: theme.colors.textMute,
-    lineHeight: 18,
+    fontSize: 14,
+    color: theme.colors.textDim,
+    lineHeight: 20,
     textAlign: 'center',
   },
   compact: {

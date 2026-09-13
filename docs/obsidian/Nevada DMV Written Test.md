@@ -68,7 +68,7 @@ Done in the 2026-09-12 debug pass:
 - [x] Netlify SPA fallback + security headers
 - [x] Jest + typecheck + web export scripts
 - [x] GitHub Actions CI
-- [x] Empty weak-area quiz no longer whitescreens
+- [x] Age-friendly navigation: Home/Study/Scores/Help tabs, Start Here card, labeled Exit, 44px+ tap targets
 - [x] Web does not prompt for native notifications
 
 Still Kure’s call before a public launch:

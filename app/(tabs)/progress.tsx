@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } fr
 import { router } from 'expo-router'
 import { useProgressStore } from '../../src/store/progress'
 import { QUESTIONS } from '../../src/data/questions'
+import { MODE_LABELS } from '../../src/lib/quizUtils'
 import { theme } from '../../src/theme'
 
 export default function ProgressTab() {
@@ -20,13 +21,13 @@ export default function ProgressTab() {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.container}>
-        <Text style={styles.heading}>Progress</Text>
+        <Text style={styles.heading} accessibilityRole="header">Your scores</Text>
 
         <View style={styles.row}>
           {[
-            { num: currentStreak, label: 'Day Streak' },
-            { num: longestStreak, label: 'Best Streak' },
-            { num: runs.length, label: 'Total Runs' },
+            { num: currentStreak, label: 'Day streak' },
+            { num: longestStreak, label: 'Best streak' },
+            { num: runs.length, label: 'Quizzes taken' },
           ].map(({ num, label }) => (
             <View key={label} style={styles.stat}>
               <Text style={styles.statNum}>{num}</Text>
@@ -37,16 +38,17 @@ export default function ProgressTab() {
 
         {recentRuns.length > 0 && (
           <>
-            <Text style={styles.section}>Recent Runs</Text>
+            <Text style={styles.section}>Recent quizzes</Text>
             {recentRuns.map((run, i) => {
               const pct = Math.round((run.score / run.total) * 100)
+              const passed = pct >= 80
               return (
-                <View key={i} style={styles.runRow}>
-                  <View>
-                    <Text style={styles.runMode}>{run.mode.toUpperCase()}</Text>
-                    <Text style={styles.runDate}>{run.date}</Text>
+                <View key={`${run.date}-${i}`} style={styles.runRow}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.runMode}>{MODE_LABELS[run.mode] ?? run.mode}</Text>
+                    <Text style={styles.runDate}>{run.score} of {run.total} correct · {run.date}</Text>
                   </View>
-                  <Text style={[styles.runScore, pct >= 80 ? styles.pass : styles.fail]}>{pct}%</Text>
+                  <Text style={[styles.runScore, passed ? styles.pass : styles.fail]}>{passed ? 'Pass' : 'Retry'} {pct}%</Text>
                 </View>
               )
             })}
@@ -56,22 +58,37 @@ export default function ProgressTab() {
         {weakItems.length > 0 && (
           <>
             <View style={styles.weakHeader}>
-              <Text style={styles.section}>Weak Areas ({weakItems.length})</Text>
-              <TouchableOpacity onPress={() => router.push({ pathname: '/quiz/[mode]', params: { mode: 'weak' } })}>
-                <Text style={styles.drill}>Drill →</Text>
+              <Text style={styles.section}>Missed often ({weakItems.length})</Text>
+              <TouchableOpacity
+                onPress={() => router.push({ pathname: '/quiz/[mode]', params: { mode: 'weak' } })}
+                style={styles.drillBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Practice missed questions"
+              >
+                <Text style={styles.drill}>Practice</Text>
               </TouchableOpacity>
             </View>
             {weakItems.map(({ q, count }) => (
               <View key={q.id} style={styles.weakItem}>
-                <Text style={styles.weakQ} numberOfLines={2}>{q.question}</Text>
-                <Text style={styles.weakCount}>×{count}</Text>
+                <Text style={styles.weakQ}>{q.question}</Text>
+                <Text style={styles.weakCount}>Missed {count}×</Text>
               </View>
             ))}
           </>
         )}
 
         {runs.length === 0 && (
-          <Text style={styles.empty}>Complete a quiz to see your progress here.</Text>
+          <>
+            <Text style={styles.empty}>Take a quiz and your scores will show up here.</Text>
+            <TouchableOpacity
+              style={styles.cta}
+              onPress={() => router.replace('/(tabs)/quiz')}
+              accessibilityRole="button"
+              accessibilityLabel="Go home and start a quiz"
+            >
+              <Text style={styles.ctaText}>Go start a quiz</Text>
+            </TouchableOpacity>
+          </>
         )}
       </ScrollView>
     </SafeAreaView>
@@ -80,23 +97,26 @@ export default function ProgressTab() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: theme.colors.bg },
-  container: { padding: 24 },
-  heading: { fontSize: theme.font.h1, fontWeight: '900', color: theme.colors.text, letterSpacing: -1, marginBottom: 24 },
-  row: { flexDirection: 'row', gap: 12, marginBottom: 32 },
-  stat: { flex: 1, backgroundColor: theme.colors.surface, borderRadius: theme.radius.md, borderWidth: 1, borderColor: theme.colors.border, padding: 16, alignItems: 'center' },
+  container: { padding: 24, paddingBottom: 40 },
+  heading: { fontSize: theme.font.h1, fontWeight: '900', color: theme.colors.text, letterSpacing: -0.5, marginBottom: 24 },
+  row: { flexDirection: 'row', gap: 10, marginBottom: 32 },
+  stat: { flex: 1, backgroundColor: theme.colors.surface, borderRadius: theme.radius.md, borderWidth: 1, borderColor: theme.colors.border, paddingVertical: 16, paddingHorizontal: 8, alignItems: 'center' },
   statNum: { fontSize: 28, fontWeight: '900', color: theme.colors.accent },
-  statLabel: { fontSize: 11, color: theme.colors.textMute, textTransform: 'uppercase', letterSpacing: 0.5, marginTop: 4, textAlign: 'center' },
-  section: { fontSize: 13, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 1, color: theme.colors.textMute, marginBottom: 12 },
-  runRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 14, borderRadius: theme.radius.md, backgroundColor: theme.colors.surface, borderWidth: 1, borderColor: theme.colors.border, marginBottom: 8 },
-  runMode: { fontSize: 13, fontWeight: '700', color: theme.colors.text },
-  runDate: { fontSize: 12, color: theme.colors.textMute, marginTop: 2 },
-  runScore: { fontSize: 18, fontWeight: '900' },
+  statLabel: { fontSize: 13, color: theme.colors.textDim, fontWeight: '700', marginTop: 6, textAlign: 'center' },
+  section: { fontSize: 16, fontWeight: '800', color: theme.colors.text, marginBottom: 12 },
+  runRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16, borderRadius: theme.radius.md, backgroundColor: theme.colors.surface, borderWidth: 1, borderColor: theme.colors.border, marginBottom: 10, gap: 12 },
+  runMode: { fontSize: 16, fontWeight: '700', color: theme.colors.text },
+  runDate: { fontSize: 14, color: theme.colors.textDim, marginTop: 4 },
+  runScore: { fontSize: 16, fontWeight: '800' },
   pass: { color: theme.colors.success },
   fail: { color: theme.colors.accent },
-  weakHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, marginTop: 8 },
-  drill: { color: theme.colors.accent, fontWeight: '700', fontSize: 14 },
-  weakItem: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 14, borderRadius: theme.radius.md, backgroundColor: theme.colors.surface, borderWidth: 1, borderColor: theme.colors.border, marginBottom: 8 },
-  weakQ: { fontSize: 13, color: theme.colors.text, flex: 1, marginRight: 12 },
-  weakCount: { fontSize: 13, color: theme.colors.accent, fontWeight: '800' },
-  empty: { color: theme.colors.textMute, textAlign: 'center', marginTop: 60, fontSize: 15, lineHeight: 24 },
+  weakHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12, marginTop: 8, gap: 12 },
+  drillBtn: { backgroundColor: theme.colors.accent, paddingVertical: 10, paddingHorizontal: 16, borderRadius: 12, minHeight: 44, justifyContent: 'center' },
+  drill: { color: theme.colors.text, fontWeight: '800', fontSize: 15 },
+  weakItem: { padding: 16, borderRadius: theme.radius.md, backgroundColor: theme.colors.surface, borderWidth: 1, borderColor: theme.colors.border, marginBottom: 10 },
+  weakQ: { fontSize: 16, color: theme.colors.text, lineHeight: 22, marginBottom: 6 },
+  weakCount: { fontSize: 14, color: theme.colors.accent, fontWeight: '800' },
+  empty: { color: theme.colors.textDim, textAlign: 'center', marginTop: 24, fontSize: 17, lineHeight: 26, marginBottom: 20 },
+  cta: { backgroundColor: theme.colors.accent, paddingVertical: 18, borderRadius: theme.radius.md, alignItems: 'center', minHeight: theme.tap, justifyContent: 'center' },
+  ctaText: { color: theme.colors.text, fontSize: 18, fontWeight: '800' },
 })

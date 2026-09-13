@@ -7,6 +7,14 @@ export const EXAM_LENGTH = 25
 export const PASS_RATIO = 0.8
 export const QUIZ_MODES: QuizMode[] = ['exam', 'all', 'quick', 'tf', 'weak']
 
+export const MODE_LABELS: Record<QuizMode, string> = {
+  exam: 'Practice Test',
+  all: 'Study Bank',
+  quick: 'Quick 20',
+  tf: 'True / False',
+  weak: 'Weak Areas',
+}
+
 export function isQuizMode(value: unknown): value is QuizMode {
   return typeof value === 'string' && (QUIZ_MODES as string[]).includes(value)
 }

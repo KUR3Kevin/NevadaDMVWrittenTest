@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } fr
 import { useLocalSearchParams, router } from 'expo-router'
 import { QUESTIONS } from '../../src/data/questions'
 import { ScoreCircle } from '../../src/components/ScoreCircle'
-import { calculatePassFail, isQuizMode } from '../../src/lib/quizUtils'
+import { calculatePassFail, isQuizMode, MODE_LABELS } from '../../src/lib/quizUtils'
 import { Disclaimer } from '../../src/components/Disclaimer'
 import { theme } from '../../src/theme'
 
@@ -29,6 +29,7 @@ export default function ResultsScreen() {
   const missedQuestions = missedIds.map(id => QUESTIONS.find(q => q.id === id)).filter(Boolean) as typeof QUESTIONS
   const rawMode = Array.isArray(mode) ? mode[0] : mode
   const quizMode = isQuizMode(rawMode) ? rawMode : 'exam'
+  const modeLabel = MODE_LABELS[quizMode]
 
   const passed = calculatePassFail(scoreNum, totalNum)
   const needed = Math.ceil(totalNum * 0.8)
@@ -36,33 +37,54 @@ export default function ResultsScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.container}>
+        <Text style={styles.kicker}>{modeLabel}</Text>
         <ScoreCircle score={scoreNum} total={totalNum} />
 
-        <Text style={styles.title}>{passed ? 'You Passed! 🎉' : 'Keep Studying'}</Text>
+        <Text style={styles.title} accessibilityRole="header">
+          {passed ? 'You passed' : 'Keep practicing'}
+        </Text>
         <Text style={styles.sub}>
           {passed
-            ? `${scoreNum}/${totalNum} correct — you met the 80% passing score used on Nevada's knowledge test.`
-            : `${scoreNum}/${totalNum} correct. Need ${needed} to pass (${Math.max(needed - scoreNum, 0)} more).`}
+            ? `${scoreNum} out of ${totalNum} correct. That meets Nevada's 80% passing score.`
+            : `${scoreNum} out of ${totalNum} correct. You need ${needed} to pass — ${Math.max(needed - scoreNum, 0)} more.`}
         </Text>
 
         {missedQuestions.length > 0 && (
           <>
-            <Text style={styles.sectionTitle}>Review These ({missedQuestions.length})</Text>
+            <Text style={styles.sectionTitle}>Review these ({missedQuestions.length})</Text>
             {missedQuestions.map(q => (
               <View key={q.id} style={styles.missItem}>
                 <Text style={styles.missQ}>{q.question}</Text>
-                <Text style={styles.missA}>✓ {q.options[q.correct]}</Text>
+                <Text style={styles.missA}>Correct answer: {q.options[q.correct]}</Text>
                 <Text style={styles.missWhy}>{q.explanation}</Text>
               </View>
             ))}
           </>
         )}
 
-        <TouchableOpacity style={styles.primaryBtn} onPress={() => router.replace({ pathname: '/quiz/[mode]', params: { mode: quizMode } })}>
-          <Text style={styles.primaryText}>Try Again</Text>
+        <TouchableOpacity
+          style={styles.primaryBtn}
+          onPress={() => router.replace({ pathname: '/quiz/[mode]', params: { mode: quizMode } })}
+          accessibilityRole="button"
+          accessibilityLabel={`Try ${modeLabel} again`}
+        >
+          <Text style={styles.primaryText}>Try again</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.outlineBtn} onPress={() => router.replace('/(tabs)/quiz')}>
-          <Text style={styles.outlineText}>Home</Text>
+        <TouchableOpacity
+          style={styles.outlineBtn}
+          onPress={() => router.replace('/(tabs)/quiz')}
+          accessibilityRole="button"
+          accessibilityLabel="Go home"
+        >
+          <Text style={styles.outlineText}>Go home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.outlineBtn}
+          onPress={() => router.replace('/(tabs)/study')}
+          accessibilityRole="button"
+          accessibilityLabel="Open study flashcards"
+        >
+          <Text style={styles.outlineText}>Study flashcards</Text>
         </TouchableOpacity>
         <View style={styles.disclaimerWrap}>
           <Disclaimer />
@@ -74,17 +96,18 @@ export default function ResultsScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: theme.colors.bg },
-  container: { padding: 24 },
-  title: { fontSize: 24, fontWeight: '800', color: theme.colors.text, textAlign: 'center', marginBottom: 8 },
-  sub: { fontSize: 14, color: theme.colors.textDim, textAlign: 'center', marginBottom: 32, lineHeight: 22 },
-  sectionTitle: { fontSize: 13, fontWeight: '800', textTransform: 'uppercase', letterSpacing: 1, color: theme.colors.textMute, marginBottom: 12 },
-  missItem: { padding: 16, borderRadius: theme.radius.md, backgroundColor: theme.colors.surface, borderWidth: 1, borderColor: theme.colors.border, marginBottom: 8 },
-  missQ: { fontSize: 14, color: theme.colors.text, marginBottom: 6, lineHeight: 20 },
-  missA: { fontSize: 13, color: theme.colors.success, fontWeight: '700' },
-  missWhy: { fontSize: 13, color: theme.colors.textDim, lineHeight: 20, marginTop: 8 },
-  primaryBtn: { backgroundColor: theme.colors.accent, padding: 16, borderRadius: theme.radius.md, alignItems: 'center', marginTop: 32, marginBottom: 10 },
-  primaryText: { color: theme.colors.text, fontSize: 15, fontWeight: '700' },
-  outlineBtn: { borderWidth: 1, borderColor: theme.colors.border, padding: 16, borderRadius: theme.radius.md, alignItems: 'center' },
-  outlineText: { color: theme.colors.textDim, fontSize: 15, fontWeight: '600' },
-  disclaimerWrap: { marginTop: 24 },
+  container: { padding: 24, paddingBottom: 40 },
+  kicker: { fontSize: 15, color: theme.colors.textDim, fontWeight: '700', textAlign: 'center', marginBottom: 8 },
+  title: { fontSize: 28, fontWeight: '800', color: theme.colors.text, textAlign: 'center', marginBottom: 10 },
+  sub: { fontSize: 17, color: theme.colors.textDim, textAlign: 'center', marginBottom: 32, lineHeight: 26 },
+  sectionTitle: { fontSize: 16, fontWeight: '800', color: theme.colors.text, marginBottom: 12 },
+  missItem: { padding: 16, borderRadius: theme.radius.md, backgroundColor: theme.colors.surface, borderWidth: 1, borderColor: theme.colors.border, marginBottom: 10 },
+  missQ: { fontSize: 16, color: theme.colors.text, marginBottom: 8, lineHeight: 24 },
+  missA: { fontSize: 16, color: theme.colors.success, fontWeight: '700' },
+  missWhy: { fontSize: 16, color: theme.colors.textDim, lineHeight: 24, marginTop: 8 },
+  primaryBtn: { backgroundColor: theme.colors.accent, paddingVertical: 18, borderRadius: theme.radius.md, alignItems: 'center', marginTop: 24, marginBottom: 12, minHeight: theme.tap, justifyContent: 'center' },
+  primaryText: { color: theme.colors.text, fontSize: 18, fontWeight: '800' },
+  outlineBtn: { borderWidth: 2, borderColor: theme.colors.border, paddingVertical: 16, borderRadius: theme.radius.md, alignItems: 'center', marginBottom: 10, minHeight: theme.tap, justifyContent: 'center' },
+  outlineText: { color: theme.colors.text, fontSize: 17, fontWeight: '700' },
+  disclaimerWrap: { marginTop: 20 },
 })
