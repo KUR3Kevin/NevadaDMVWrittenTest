@@ -1,4 +1,4 @@
-import { filterQuestions, shuffleArray, calculatePassFail, shuffleQuestionOptions, EXAM_LENGTH } from '../src/lib/quizUtils'
+import { filterQuestions, shuffleArray, calculatePassFail, shuffleQuestionOptions, EXAM_LENGTH, MODE_LABELS } from '../src/lib/quizUtils'
 import { QUESTIONS } from '../src/data/questions'
 
 describe('shuffleArray', () => {
@@ -67,5 +67,13 @@ describe('calculatePassFail', () => {
   })
   it('returns false when total is 0', () => {
     expect(calculatePassFail(0, 0)).toBe(false)
+  })
+})
+
+describe('MODE_LABELS', () => {
+  it('uses plain-language names for every quiz mode', () => {
+    expect(MODE_LABELS.exam).toBe('Practice Test')
+    expect(MODE_LABELS.tf).toMatch(/True/)
+    expect(MODE_LABELS.weak).toBe('Weak Areas')
   })
 })

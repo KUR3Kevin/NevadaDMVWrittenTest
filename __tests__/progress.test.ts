@@ -1,4 +1,5 @@
 import { useProgressStore } from '../src/store/progress'
+import { localDateString } from '../src/lib/dates'
 
 const INITIAL = {
   runs: [], wrongCounts: {}, currentStreak: 0,
@@ -17,7 +18,7 @@ describe('addRun', () => {
     const { runs } = useProgressStore.getState()
     expect(runs).toHaveLength(1)
     expect(runs[0].score).toBe(45)
-    expect(runs[0].date).toBe(new Date().toISOString().split('T')[0])
+    expect(runs[0].date).toBe(localDateString())
   })
 
   it('increments wrongCounts for each missed question id', () => {
@@ -35,7 +36,7 @@ describe('addRun', () => {
   })
 
   it('does not increment streak twice on same day', () => {
-    const today = new Date().toISOString().split('T')[0]
+    const today = localDateString()
     useProgressStore.setState({ lastStudyDate: today, currentStreak: 3, longestStreak: 5 })
     useProgressStore.getState().addRun({ mode: 'quick', score: 18, total: 20, missedIds: [] })
     expect(useProgressStore.getState().currentStreak).toBe(3)
@@ -78,8 +79,15 @@ describe('getBestScore', () => {
         { mode: 'quick', score: 18, total: 20, date: '2026-01-01', missedIds: [] },
       ],
     })
-    expect(useProgressStore.getState().getBestScore('all')).toBe(Math.round((50/56)*100))
+    expect(useProgressStore.getState().getBestScore('all')).toBe(Math.round((50 / 56) * 100))
     expect(useProgressStore.getState().getBestScore('quick')).toBe(90)
+  })
+
+  it('returns null when runs have a zero total', () => {
+    useProgressStore.setState({
+      runs: [{ mode: 'exam', score: 0, total: 0, date: '2026-01-01', missedIds: [] }],
+    })
+    expect(useProgressStore.getState().getBestScore('exam')).toBeNull()
   })
 })
 

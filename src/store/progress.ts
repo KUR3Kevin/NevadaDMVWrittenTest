@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { localDateString, yesterdayLocalString } from '../lib/dates'
 
 export type QuizMode = 'exam' | 'all' | 'quick' | 'tf' | 'weak'
 
@@ -49,20 +50,17 @@ export const useProgressStore = create<State & Actions>()(
       ...INITIAL_STATE,
 
       addRun: (run) => {
-        const today = new Date().toISOString().split('T')[0]
+        const today = localDateString()
         const { lastStudyDate, currentStreak, longestStreak, wrongCounts } = get()
 
-        const newWrongCounts = { ...wrongCounts }
+        const newWrongCounts = { ...(wrongCounts ?? {}) }
         run.missedIds.forEach(id => {
           newWrongCounts[id] = (newWrongCounts[id] ?? 0) + 1
         })
 
         let newStreak = currentStreak
         if (lastStudyDate !== today) {
-          const yesterday = new Date()
-          yesterday.setDate(yesterday.getDate() - 1)
-          const yesterdayStr = yesterday.toISOString().split('T')[0]
-          newStreak = lastStudyDate === yesterdayStr ? currentStreak + 1 : 1
+          newStreak = lastStudyDate === yesterdayLocalString() ? currentStreak + 1 : 1
         }
 
         set(state => ({
@@ -75,12 +73,12 @@ export const useProgressStore = create<State & Actions>()(
       },
 
       getWeakQuestionIds: () =>
-        Object.entries(get().wrongCounts)
+        Object.entries(get().wrongCounts ?? {})
           .filter(([, count]) => count >= 2)
           .map(([id]) => Number(id)),
 
       getBestScore: (mode) => {
-        const modeRuns = get().runs.filter(r => r.mode === mode)
+        const modeRuns = (get().runs ?? []).filter(r => r.mode === mode && r.total > 0)
         if (modeRuns.length === 0) return null
         return Math.max(...modeRuns.map(r => Math.round((r.score / r.total) * 100)))
       },
