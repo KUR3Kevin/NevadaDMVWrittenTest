@@ -1,5 +1,5 @@
 import React from 'react'
-import { Platform } from 'react-native'
+import { Platform, Text } from 'react-native'
 import { Tabs } from 'expo-router'
 import { Ionicons } from '@expo/vector-icons'
 import { theme } from '../../src/theme'
@@ -10,6 +10,25 @@ function icon(name: IconName, focused: boolean): IconName {
   return focused ? name : `${name}-outline` as IconName
 }
 
+function TabLabel({ children, color }: { children: string; color: string }) {
+  return (
+    <Text
+      numberOfLines={1}
+      style={{
+        color,
+        fontWeight: '700',
+        fontSize: 12,
+        marginTop: 2,
+        paddingBottom: 4,
+        lineHeight: 16,
+        textAlign: 'center',
+      }}
+    >
+      {children}
+    </Text>
+  )
+}
+
 export default function TabLayout() {
   return (
     <Tabs
@@ -18,14 +37,16 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: theme.colors.surface,
           borderTopColor: theme.colors.border,
-          height: Platform.OS === 'web' ? 72 : 84,
+          height: Platform.OS === 'web' ? 88 : 92,
           paddingTop: 8,
-          paddingBottom: Platform.OS === 'web' ? 10 : 20,
+          paddingBottom: Platform.OS === 'web' ? 16 : 24,
+          overflow: 'visible',
         },
         tabBarActiveTintColor: theme.colors.accent,
         tabBarInactiveTintColor: theme.colors.textDim,
-        tabBarLabelStyle: { fontWeight: '700', fontSize: 13, marginTop: 2 },
-        tabBarItemStyle: { minHeight: 48, minWidth: 0, paddingHorizontal: 0 },
+        tabBarLabelStyle: { fontWeight: '700', fontSize: 12, marginTop: 2, marginBottom: 0, lineHeight: 16 },
+        tabBarItemStyle: { minHeight: 56, minWidth: 0, paddingHorizontal: 0, overflow: 'visible' },
+        tabBarLabel: ({ children, color }) => <TabLabel color={color}>{String(children)}</TabLabel>,
         tabBarHideOnKeyboard: true,
       }}
     >

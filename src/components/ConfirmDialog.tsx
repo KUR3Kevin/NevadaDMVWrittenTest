@@ -70,9 +70,8 @@ const styles = StyleSheet.create({
   },
   title: { fontSize: 22, fontWeight: '800', color: theme.colors.text },
   message: { fontSize: 17, color: theme.colors.textDim, lineHeight: 24, marginBottom: 8 },
-  row: { flexDirection: 'row', gap: 12 },
+  row: { flexDirection: 'column', gap: 10 },
   cancel: {
-    flex: 1,
     minHeight: theme.tap,
     borderRadius: theme.radius.md,
     borderWidth: 2,
@@ -83,7 +82,6 @@ const styles = StyleSheet.create({
   },
   cancelText: { color: theme.colors.text, fontSize: 17, fontWeight: '700' },
   confirm: {
-    flex: 1,
     minHeight: theme.tap,
     borderRadius: theme.radius.md,
     backgroundColor: theme.colors.accent,
