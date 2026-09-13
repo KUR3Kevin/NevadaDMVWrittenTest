@@ -14,7 +14,12 @@ export function QuizOption({ letter, text, state, onPress }: Props) {
 
   return (
     <TouchableOpacity
-      style={[styles.row, state === 'correct' && styles.rowCorrect, state === 'wrong' && styles.rowWrong]}
+      style={[
+        styles.row,
+        state === 'correct' && styles.rowCorrect,
+        state === 'wrong' && styles.rowWrong,
+        state === 'disabled' && styles.rowDisabled,
+      ]}
       onPress={onPress}
       disabled={state !== 'default'}
       activeOpacity={0.7}
@@ -46,6 +51,7 @@ const styles = StyleSheet.create({
   },
   rowCorrect: { borderColor: theme.colors.success, backgroundColor: theme.colors.surfaceHi },
   rowWrong: { borderColor: theme.colors.accent, backgroundColor: theme.colors.surfaceHi },
+  rowDisabled: { opacity: 0.55 },
   badge: {
     width: 40,
     height: 40,

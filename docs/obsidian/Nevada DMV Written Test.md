@@ -10,7 +10,7 @@ tags:
 aliases:
   - NevadaDMVWrittenTest
   - NV written test app
-updated: 2026-09-12
+updated: 2026-09-13
 status: near-public
 github: https://github.com/KUR3Kevin/NevadaDMVWrittenTest
 ---
@@ -70,6 +70,7 @@ Done in the 2026-09-12 debug pass:
 - [x] GitHub Actions CI
 - [x] Age-friendly navigation: Home/Study/Scores/Help tabs, Start Here card, labeled Exit, 44px+ tap targets
 - [x] Web does not prompt for native notifications
+- [x] 2026-09-13 debug: in-app Leave/Reset dialogs (no `window.confirm`), local-timezone study streaks, dimmed used-up answers, missing-results fallback
 
 Still Kure’s call before a public launch:
 

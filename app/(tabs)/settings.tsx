@@ -4,6 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import { useProgressStore } from '../../src/store/progress'
 import { requestNotificationPermission, scheduleReminder, cancelReminder } from '../../src/lib/notifications'
 import { Disclaimer } from '../../src/components/Disclaimer'
+import { ConfirmDialog } from '../../src/components/ConfirmDialog'
 import { theme } from '../../src/theme'
 
 const HANDBOOK_URL = 'https://dmv.nv.gov/pdfforms/dlbook.pdf'
@@ -16,6 +17,7 @@ export default function SettingsTab() {
     setNotificationsEnabled, setNotificationTime, reset,
   } = useProgressStore()
   const [showPicker, setShowPicker] = useState(false)
+  const [resetOpen, setResetOpen] = useState(false)
 
   const toggleNotifications = async (value: boolean) => {
     if (value) {
@@ -40,21 +42,7 @@ export default function SettingsTab() {
     if (notificationsEnabled) await scheduleReminder(h, m)
   }
 
-  const confirmReset = () => {
-    const message = 'This deletes all quiz history, streaks, and missed-question lists. This cannot be undone.'
-    if (Platform.OS === 'web') {
-      if (typeof window !== 'undefined' && window.confirm(`Reset all progress?\n\n${message}`)) reset()
-      return
-    }
-    Alert.alert(
-      'Reset all progress?',
-      message,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Reset', style: 'destructive', onPress: reset },
-      ]
-    )
-  }
+  const confirmReset = () => setResetOpen(true)
 
   const timeDate = new Date()
   timeDate.setHours(notificationHour, notificationMinute, 0, 0)
@@ -122,6 +110,19 @@ export default function SettingsTab() {
         <Text style={styles.version}>Nevada DMV Written Test · v1.0.0</Text>
         <Disclaimer compact />
       </ScrollView>
+      <ConfirmDialog
+        visible={resetOpen}
+        title="Reset all progress?"
+        message="This deletes all quiz history, streaks, and missed-question lists. This cannot be undone."
+        cancelLabel="Cancel"
+        confirmLabel="Reset"
+        destructive
+        onCancel={() => setResetOpen(false)}
+        onConfirm={() => {
+          reset()
+          setResetOpen(false)
+        }}
+      />
     </SafeAreaView>
   )
 }

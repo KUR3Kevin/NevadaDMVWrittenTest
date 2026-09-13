@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from 'react'
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Platform, Alert } from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Platform } from 'react-native'
 import { useLocalSearchParams, router } from 'expo-router'
 import * as Haptics from 'expo-haptics'
 import { QUESTIONS } from '../../src/data/questions'
@@ -8,6 +8,7 @@ import { filterQuestions, isQuizMode, shuffleQuestionOptions, MODE_LABELS } from
 import type { QuizMode } from '../../src/lib/quizUtils'
 import { QuizOption, OptionState } from '../../src/components/QuizOption'
 import { StreakBadge } from '../../src/components/StreakBadge'
+import { ConfirmDialog } from '../../src/components/ConfirmDialog'
 import { theme } from '../../src/theme'
 
 async function hapticSuccess() {
@@ -51,31 +52,22 @@ export default function QuizScreen() {
   const [answered, setAnswered] = useState(false)
   const [optionStates, setOptionStates] = useState<OptionState[]>([])
   const [streak, setStreak] = useState(0)
+  const [leaveOpen, setLeaveOpen] = useState(false)
+  const [lastCorrect, setLastCorrect] = useState(false)
 
   const scoreRef = useRef(0)
   const missedIdsRef = useRef<number[]>([])
-  const lastCorrectRef = useRef(false)
 
   const q = questions[index]
   const modeLabel = MODE_LABELS[mode]
 
-  const askToLeave = useCallback(() => {
-    const message = 'Leave this quiz? Your answers will not be saved.'
-    if (Platform.OS === 'web') {
-      if (typeof window !== 'undefined' && window.confirm(message)) leaveQuiz()
-      return
-    }
-    Alert.alert('Leave quiz?', message, [
-      { text: 'Keep going', style: 'cancel' },
-      { text: 'Leave', style: 'destructive', onPress: leaveQuiz },
-    ])
-  }, [])
+  const askToLeave = useCallback(() => setLeaveOpen(true), [])
 
   const pick = useCallback((choice: number) => {
     if (answered || !q) return
     setAnswered(true)
     const isCorrect = choice === q.correct
-    lastCorrectRef.current = isCorrect
+    setLastCorrect(isCorrect)
 
     setOptionStates(q.options.map((_, i) => {
       if (i === q.correct) return 'correct'
@@ -172,8 +164,8 @@ export default function QuizScreen() {
 
         {answered && (
           <View style={styles.explain} accessibilityLiveRegion="polite">
-            <Text style={[styles.explainHead, { color: lastCorrectRef.current ? theme.colors.success : theme.colors.accent }]}>
-              {lastCorrectRef.current ? 'Correct' : `Not quite — the answer is ${String.fromCharCode(65 + q.correct)}`}
+            <Text style={[styles.explainHead, { color: lastCorrect ? theme.colors.success : theme.colors.accent }]}>
+              {lastCorrect ? 'Correct' : `Not quite — the answer is ${String.fromCharCode(65 + q.correct)}`}
             </Text>
             <Text style={styles.explainBody}>{q.explanation}</Text>
           </View>
@@ -187,6 +179,16 @@ export default function QuizScreen() {
           </TouchableOpacity>
         </View>
       )}
+      <ConfirmDialog
+        visible={leaveOpen}
+        title="Leave this quiz?"
+        message="Your answers will not be saved."
+        cancelLabel="Keep going"
+        confirmLabel="Leave"
+        destructive
+        onCancel={() => setLeaveOpen(false)}
+        onConfirm={leaveQuiz}
+      />
     </SafeAreaView>
   )
 }
@@ -196,10 +198,10 @@ const styles = StyleSheet.create({
   progressTrack: { height: 6, backgroundColor: theme.colors.border },
   progressFill: { height: 6, backgroundColor: theme.colors.accent },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 12, gap: 12 },
-  headerText: { flex: 1 },
+  headerText: { flex: 1, minWidth: 0 },
   modeLabel: { fontSize: 14, color: theme.colors.textDim, fontWeight: '700', marginBottom: 2 },
   counter: { fontSize: 18, color: theme.colors.text, fontWeight: '800' },
-  exitBtn: { minHeight: 48, minWidth: 64, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: theme.colors.border, alignItems: 'center', justifyContent: 'center' },
+  exitBtn: { minHeight: 48, minWidth: 64, paddingHorizontal: 14, borderRadius: 12, borderWidth: 1, borderColor: theme.colors.border, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
   exit: { fontSize: 16, color: theme.colors.text, fontWeight: '700' },
   body: { padding: 20, paddingBottom: 140 },
   question: { fontSize: 22, fontWeight: '800', color: theme.colors.text, lineHeight: 30, marginBottom: 22 },

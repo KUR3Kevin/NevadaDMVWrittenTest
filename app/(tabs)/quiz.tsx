@@ -67,7 +67,7 @@ export default function QuizTab() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: theme.colors.bg },
-  container: { padding: 24, paddingBottom: 40 },
+  container: { padding: 24, paddingBottom: 48 },
   heading: { fontSize: theme.font.h1, fontWeight: '900', color: theme.colors.text, letterSpacing: -0.5, marginBottom: 8 },
   sub: { fontSize: 18, color: theme.colors.text, fontWeight: '700', marginBottom: 8 },
   howto: { fontSize: 16, color: theme.colors.textDim, lineHeight: 24, marginBottom: 24 },

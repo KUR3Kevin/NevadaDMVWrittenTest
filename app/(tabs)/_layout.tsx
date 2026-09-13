@@ -25,7 +25,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: theme.colors.accent,
         tabBarInactiveTintColor: theme.colors.textDim,
         tabBarLabelStyle: { fontWeight: '700', fontSize: 13, marginTop: 2 },
-        tabBarItemStyle: { minHeight: 48 },
+        tabBarItemStyle: { minHeight: 48, minWidth: 0, paddingHorizontal: 0 },
         tabBarHideOnKeyboard: true,
       }}
     >

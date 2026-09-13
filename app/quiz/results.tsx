@@ -25,11 +25,31 @@ export default function ResultsScreen() {
 
   const scoreNum = Number(score)
   const totalNum = Number(total)
+  const hasValidScore = Number.isFinite(scoreNum) && Number.isFinite(totalNum) && totalNum > 0
   const missedIds = parseMissed(missed)
   const missedQuestions = missedIds.map(id => QUESTIONS.find(q => q.id === id)).filter(Boolean) as typeof QUESTIONS
   const rawMode = Array.isArray(mode) ? mode[0] : mode
   const quizMode = isQuizMode(rawMode) ? rawMode : 'exam'
   const modeLabel = MODE_LABELS[quizMode]
+
+  if (!hasValidScore) {
+    return (
+      <SafeAreaView style={styles.safe}>
+        <View style={styles.container}>
+          <Text style={styles.title} accessibilityRole="header">Results not found</Text>
+          <Text style={styles.sub}>That quiz result is missing. Start a new practice test from Home.</Text>
+          <TouchableOpacity
+            style={styles.primaryBtn}
+            onPress={() => router.replace('/(tabs)/quiz')}
+            accessibilityRole="button"
+            accessibilityLabel="Go home"
+          >
+            <Text style={styles.primaryText}>Go home</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    )
+  }
 
   const passed = calculatePassFail(scoreNum, totalNum)
   const needed = Math.ceil(totalNum * 0.8)

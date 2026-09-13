@@ -47,6 +47,13 @@ describe('question bank integrity', () => {
     expect(exam!.options[exam!.correct]).toMatch(/25/)
     expect(exam!.options[exam!.correct]).toMatch(/20/)
   })
+
+  it('teaches U-turns are illegal when you cannot see 200 feet', () => {
+    const uturn = QUESTIONS.find(q => q.id === 41)
+    expect(uturn).toBeDefined()
+    expect(uturn!.options.join(' ')).toMatch(/200 feet/)
+    expect(uturn!.options[uturn!.correct].toLowerCase()).toMatch(/all of the above/)
+  })
 })
 
 describe('study content integrity', () => {
