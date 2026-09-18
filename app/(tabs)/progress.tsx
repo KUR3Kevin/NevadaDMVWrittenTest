@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { useProgressStore } from '../../src/store/progress'
 import { QUESTIONS } from '../../src/data/questions'
@@ -82,7 +83,7 @@ export default function ProgressTab() {
             <Text style={styles.empty}>Take a quiz and your scores will show up here.</Text>
             <TouchableOpacity
               style={styles.cta}
-              onPress={() => router.replace('/(tabs)/quiz')}
+              onPress={() => router.navigate('/(tabs)/quiz')}
               accessibilityRole="button"
               accessibilityLabel="Go home and start a quiz"
             >

@@ -1,10 +1,12 @@
 import React from 'react'
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, router } from 'expo-router'
 import { QUESTIONS } from '../../src/data/questions'
 import { ScoreCircle } from '../../src/components/ScoreCircle'
 import { calculatePassFail, isQuizMode, MODE_LABELS } from '../../src/lib/quizUtils'
 import { Disclaimer } from '../../src/components/Disclaimer'
+import { goToTab } from '../../src/lib/navigation'
 import { theme } from '../../src/theme'
 
 function parseMissed(raw: string | string[] | undefined): number[] {
@@ -40,7 +42,7 @@ export default function ResultsScreen() {
           <Text style={styles.sub}>That quiz result is missing. Start a new practice test from Home.</Text>
           <TouchableOpacity
             style={styles.primaryBtn}
-            onPress={() => router.replace('/(tabs)/quiz')}
+            onPress={() => goToTab('quiz')}
             accessibilityRole="button"
             accessibilityLabel="Go home"
           >
@@ -92,7 +94,7 @@ export default function ResultsScreen() {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.outlineBtn}
-          onPress={() => router.replace('/(tabs)/quiz')}
+          onPress={() => goToTab('quiz')}
           accessibilityRole="button"
           accessibilityLabel="Go home"
         >
@@ -100,7 +102,7 @@ export default function ResultsScreen() {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.outlineBtn}
-          onPress={() => router.replace('/(tabs)/study')}
+          onPress={() => goToTab('study')}
           accessibilityRole="button"
           accessibilityLabel="Open study flashcards"
         >

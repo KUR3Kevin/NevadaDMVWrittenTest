@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useRef } from 'react'
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Platform } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { useLocalSearchParams, router } from 'expo-router'
 import * as Haptics from 'expo-haptics'
 import { QUESTIONS } from '../../src/data/questions'
@@ -9,6 +10,7 @@ import type { QuizMode } from '../../src/lib/quizUtils'
 import { QuizOption, OptionState } from '../../src/components/QuizOption'
 import { StreakBadge } from '../../src/components/StreakBadge'
 import { ConfirmDialog } from '../../src/components/ConfirmDialog'
+import { goToTab } from '../../src/lib/navigation'
 import { theme } from '../../src/theme'
 
 async function hapticSuccess() {
@@ -36,7 +38,7 @@ function parseMode(raw: string | string[] | undefined): QuizMode {
 
 function leaveQuiz() {
   if (router.canGoBack()) router.back()
-  else router.replace('/(tabs)/quiz')
+  else goToTab('quiz')
 }
 
 export default function QuizScreen() {

@@ -10,7 +10,7 @@ tags:
 aliases:
   - NevadaDMVWrittenTest
   - NV written test app
-updated: 2026-09-13
+updated: 2026-09-18
 status: near-public
 github: https://github.com/KUR3Kevin/NevadaDMVWrittenTest
 ---
@@ -71,6 +71,15 @@ Done in the 2026-09-12 debug pass:
 - [x] Age-friendly navigation: Home/Study/Scores/Help tabs, Start Here card, labeled Exit, 44px+ tap targets
 - [x] Web does not prompt for native notifications
 - [x] 2026-09-13 debug: in-app Leave/Reset dialogs (no `window.confirm`), local-timezone study streaks, dimmed used-up answers, missing-results fallback
+- [x] 2026-09-18 debug pass:
+  - Answer shuffling no longer scrambles "All of the above" away from the last slot, and True/False items keep True then False
+  - `Go home` / `Study flashcards` on the results screen pop the quiz stack instead of pushing a second copy of the tab navigator (browser Back used to land on a stale Home)
+  - Screens use `SafeAreaView` from `react-native-safe-area-context` (the React Native one is deprecated in 0.81)
+  - `expo-notifications` is loaded lazily so the web build stops logging the push-token warning
+  - Dropped the unused Expo template entry points `App.tsx` and `index.ts` (the app boots from `expo-router/entry`)
+  - Dependencies refreshed inside SDK 54 (expo 54.0.37, expo-router 6.0.24, jest-expo 54.0.18, zustand 5.0.15) plus `npm audit fix`: 25 advisories down to 12
+  - CI now runs `actions/checkout@v7` and `actions/setup-node@v7`
+  - Verified: 50 Jest tests, `tsc --noEmit`, `expo export --platform web`, and a scripted browser play-through of every tab and a full 25-question test
 
 Still Kure’s call before a public launch:
 

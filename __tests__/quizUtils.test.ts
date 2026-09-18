@@ -22,6 +22,38 @@ describe('shuffleQuestionOptions', () => {
     expect(shuffled.options[shuffled.correct]).toBe(original.options[original.correct])
     expect(shuffled.options.slice().sort()).toEqual(original.options.slice().sort())
   })
+
+  it('keeps True/False questions in their natural order', () => {
+    const tf = QUESTIONS.filter(q => q.options.length === 2)
+    expect(tf.length).toBeGreaterThan(0)
+    for (let i = 0; i < 25; i++) {
+      tf.forEach(q => {
+        const shuffled = shuffleQuestionOptions(q)
+        expect(shuffled.options).toEqual(q.options)
+        expect(shuffled.correct).toBe(q.correct)
+      })
+    }
+  })
+
+  it('pins "All of the above" style options to the last position', () => {
+    const anchored = QUESTIONS.filter(q => q.options.some(o => /of the above/i.test(o)))
+    expect(anchored.length).toBeGreaterThan(0)
+    for (let i = 0; i < 25; i++) {
+      anchored.forEach(q => {
+        const shuffled = shuffleQuestionOptions(q)
+        expect(shuffled.options[shuffled.options.length - 1]).toMatch(/of the above/i)
+        expect(shuffled.options[shuffled.correct]).toBe(q.options[q.correct])
+        expect(shuffled.options.slice().sort()).toEqual(q.options.slice().sort())
+      })
+    }
+  })
+
+  it('still shuffles regular multiple-choice questions', () => {
+    const q = QUESTIONS.find(q => q.id === 1)!
+    const seen = new Set<string>()
+    for (let i = 0; i < 50; i++) seen.add(shuffleQuestionOptions(q).options.join('|'))
+    expect(seen.size).toBeGreaterThan(1)
+  })
 })
 
 describe('filterQuestions', () => {

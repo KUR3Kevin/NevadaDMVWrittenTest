@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, Switch, Alert, TouchableOpacity, SafeAreaView, ScrollView, Platform, Linking } from 'react-native'
+import { View, Text, StyleSheet, Switch, Alert, TouchableOpacity, ScrollView, Platform, Linking } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import { useProgressStore } from '../../src/store/progress'
 import { requestNotificationPermission, scheduleReminder, cancelReminder } from '../../src/lib/notifications'
